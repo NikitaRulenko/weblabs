@@ -1,0 +1,1 @@
+http://qaru.site/questions/264937/transform-es5-code-to-es6-at-runtime
