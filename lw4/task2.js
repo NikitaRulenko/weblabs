@@ -1,24 +1,27 @@
-function pulloutArray(arr){
-  var mass = '';
+/** Reads an array and left just numbers except any other values
+ * 
+ * @param {array} arr 
+ * @return {array} output array
+ *  
+ */
+function pulloutArray(arr) {
   var output = [];
 
-  mass = arr.toString();
-  mass.split('');
-
-  for(var i = 0; i<=mass.length; i++){
-    if(mass[i] == '0' ||
-       mass[i] == '1' ||
-       mass[i] == '2' ||
-       mass[i] == '3' ||
-       mass[i] == '4' ||
-       mass[i] == '5' ||
-       mass[i] == '6' ||
-       mass[i] == '7' ||
-       mass[i] == '8' ||
-       mass[i] == '9'){
-      output.push(parseInt(mass[i]));
+  for (var i = 0; i <= arr.length; i++) {
+    var type;
+    type = typeof(arr[i]);
+    if (type === "number") {
+      output.push(arr[i]);
+    } else if (type === "object") {
+      for (var j = 0; j <= arr[i].length; j++) {
+        type = typeof(arr[i][j]);
+        if (type === "number") {
+          output.push(arr[i][j]);
+        }
+      }
     }
   }
-
-  console.log(output);
+  return output;
 }
+
+//test data var into = [1, 222, 3, [4,5,666], 7, ,"bogobogo",8, 9];
