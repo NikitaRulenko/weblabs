@@ -26,7 +26,6 @@ var addMovieBlock = function (image, likes, title, info, desc, srcWatch) {
   MoviesListImage.style.width = "20%";
   MoviesListImage.style.height = "auto";
 
-
   MoviesListElem.appendChild(MoviesListImage);
   MoviesListElem.appendChild(MoviesListTitle);
   MoviesListElem.appendChild(MoviesListInfo);
@@ -36,9 +35,6 @@ var addMovieBlock = function (image, likes, title, info, desc, srcWatch) {
 
   MoviesList.appendChild(MoviesListElem);
 }
-
-
-
 
 var prepareUrl = function (vkAPImethod, id, count) {
   count = count || 1;
@@ -78,7 +74,6 @@ var parseResponse = function (jsonObj, condition) {
         i--;
       }
     }
-
 
     if (v[0].length > 40) v = v.splice(0, 1);
     return v;
@@ -166,8 +161,6 @@ var parseResponse = function (jsonObj, condition) {
   return arrRet;
 };
 
-
-
 var tags = [];
 
 function setTagSelected(e) {
@@ -192,7 +185,6 @@ function setTagSelected(e) {
   }
 }
 
-
 function getVKMovies(e) {
   setTagSelected(e);
   ajaxRequest({
@@ -202,7 +194,6 @@ function getVKMovies(e) {
   });
 }
 
-
 var parsedContent = []
 var parsedContentIt = 0;
 
@@ -211,14 +202,12 @@ function createContent(vkResponse) {
     return Math.random() - 0.5;
   };
 
-
   parsedContent = [];
   parsedContent = parseResponse(vkResponse, tags);
   parsedContent.sort(sRand);
   parsedContentIt = 0;
 
   reloadContent();
-
 
   if (parsedContent.length == 0) {
     addMovieBlock(
@@ -295,8 +284,6 @@ function buttons() {
     ButtonsList.appendChild(Button);
   }
 }
-
-
 
 window.onload = function () {
   buttons();
