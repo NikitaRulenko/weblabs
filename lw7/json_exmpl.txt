@@ -1,0 +1,8 @@
+{
+	"article": {
+    	"title": "qwe",
+      	"description": "dodo",
+      	"body": "peppe",
+      	"author_id": 1
+    }
+}
