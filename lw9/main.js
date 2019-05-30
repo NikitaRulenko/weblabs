@@ -1,55 +1,41 @@
 var RecoveryPassword = {
     code: 0,
     valid: false,
-    recovery(recWay, value) {
-        if (recWay == "sms") {
-            this.code = smsSend.send(value);
-        } else if (recWay == "email") {
-            this.code = emailSend.send(value);
+    recovery(recWay, userData) {
+        if (recWay == "sms" && Sms.send(userData) == true) {
+            this.code = codeGenerator();
+        } else if (recWay == "email" && Email.send(userData) == true) {
+            this.code = codeGenerator();
         } else return false;
     },
-    validate() {
-        return codeValidator.verify();
-    }
-}
-
-var codeValidator = {
-    valid: false,
-    verify(userCode, code) {
-        if (userCode === code) {
-            valid = true;
-            return valid;
+    validate(userCode) {
+        if (userCode === this.code) {
+            this.valid = true;
+            return this.valid;
         } else return false;
     }
 }
 
-var emailSend = {
-    send(value) {
+function codeGenerator(){
+    return Math.floor(Math.random() * (99999 - 10000 + 1)) + 10000;
+} 
+
+var Email = {
+    send(email) {
         var check = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
-        if (check.test(value) == false) return false;
+        if (check.test(email) == false) return false;
         else {
-            return codeGen.generate();
+            return true;
         }
     }
 }
 
-var smsSend = {
-    send(value) {
-        if (typeof (value) != "string" || value.length != 11 || isNaN(value) || isNaN(Number.parseInt(value))) return false;
+var Sms = {
+    send(number) {
+        if (typeof (number) != "string" || number.length != 11 || isNaN(number) || isNaN(Number.parseInt(number))) return false;
         else {
-            return codeGen.generate();
+            return true;
         }
     }
 }
 
-var codeGen = {
-    code: 0,
-    generate() {
-        this.code = Math.floor(Math.random() * (99999 - 10000 + 1)) + 10000;
-        return this.code;
-    },
-    checkCode(value) {
-        if (value == this.code) return true;
-        else return false;
-    }
-}
