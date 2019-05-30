@@ -2,10 +2,23 @@ var RecoveryPassword = {
     code: 0,
     valid: false,
     recovery(recWay, userData) {
-        if (recWay == "sms" && Sms.send(userData) == true) {
-            this.code = codeGenerator();
-        } else if (recWay == "email" && Email.send(userData) == true) {
-            this.code = codeGenerator();
+        if (recWay == "sms") {
+            if (typeof (userData) == "string" &&
+                userData.length == 11 &&
+                isNaN(userData) == false &&
+                isNaN(Number.parseInt(userData)) == false) {
+                this.code = codeGenerator();
+            } else return false;
+
+            Sms.send(this.code);
+
+        } else if (recWay == "email") {
+            var check = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+            if (check.test(userData) == true) this.code = codeGenerator();
+            else return false;
+
+            Email.send(this.code);
+
         } else return false;
     },
     validate(userCode) {
@@ -21,20 +34,13 @@ function codeGenerator() {
 }
 
 var Email = {
-    send(email) {
-        var check = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
-        if (check.test(email) == false) return false;
-        else {
-            return true;
-        }
+    send(code) {
+        console.log(code);
     }
 }
 
 var Sms = {
-    send(number) {
-        if (typeof (number) != "string" || number.length != 11 || isNaN(number) || isNaN(Number.parseInt(number))) return false;
-        else {
-            return true;
-        }
+    send(code) {
+        console.log(code);
     }
 }
