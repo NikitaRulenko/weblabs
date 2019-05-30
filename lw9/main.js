@@ -16,9 +16,9 @@ var RecoveryPassword = {
     }
 }
 
-function codeGenerator(){
+function codeGenerator() {
     return Math.floor(Math.random() * (99999 - 10000 + 1)) + 10000;
-} 
+}
 
 var Email = {
     send(email) {
@@ -38,4 +38,3 @@ var Sms = {
         }
     }
 }
-
