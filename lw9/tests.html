@@ -76,11 +76,11 @@
             }
         }
 
-        var code = RecoveryPassword.code;
-
+        var RPcode = RecoveryPassword.code;
+        var cGcode = codeGenerator();
         var resultSMS = RecoveryPassword.recovery("sms", "11111111111");
         var resultEmail = RecoveryPassword.recovery("email", "test@test.ru");
-        var resultValidate = RecoveryPassword.validate(code);
+        var resultValidate = RecoveryPassword.validate(RPcode);
     </script>
 
     <!-- в этом скрипте находятся спеки -->

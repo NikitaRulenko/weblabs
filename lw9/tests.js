@@ -12,3 +12,9 @@ describe("RecoveryPassword", function () {
     assert.equal(resultValidate, false);
   });
 });
+
+describe("Code generator", function () {
+  it("Generates code", function () {
+    assert.equal(toString(cGcode).length, 18);
+  });
+});
