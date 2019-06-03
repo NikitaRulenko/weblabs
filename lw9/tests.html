@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>lw9 tests</title>
+
+    <!-- подключаем стили Mocha, для отображения результатов -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mocha/2.1.0/mocha.css">
+    <!-- подключаем библиотеку Mocha -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mocha/2.1.0/mocha.js"></script>
+    <!-- настраиваем Mocha: предстоит BDD-тестирование -->
+    <script>
+        mocha.setup('bdd');
+    </script>
+
+    <!-- подключаем chai -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chai/2.0.0/chai.js"></script>
+    <!-- в chai есть много всего, выносим assert в глобальную область -->
+    <script>
+        var assert = chai.assert;
+    </script>
+
+</head>
+
+<body>
+    <script>
+        var RecoveryPassword = {
+            code: 0,
+            valid: false,
+            recovery(recWay, userData) {
+                if (recWay == "sms") {
+                    if (typeof (userData) == "string" &&
+                        userData.length == 11 &&
+                        isNaN(userData) == false &&
+                        isNaN(Number.parseInt(userData)) == false) {
+                        this.code = codeGenerator();
+                    } else return false;
+
+                    Sms.send(this.code);
+                    return true;
+
+                } else if (recWay == "email") {
+                    var check = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+                    if (check.test(userData) == true) this.code = codeGenerator();
+                    else return false;
+
+                    Email.send(this.code);
+                    return true;
+
+                } else return false;
+            },
+            validate(userCode) {
+                if (userCode === this.code) {
+                    this.valid = true;
+                    return this.valid;
+                } else return false;
+            }
+        }
+
+        function codeGenerator() {
+            return Math.floor(Math.random() * (99999 - 10000 + 1)) + 10000;
+        }
+
+        var Email = {
+            send(code) {
+                console.log(code);
+            }
+        }
+
+        var Sms = {
+            send(code) {
+                console.log(code);
+            }
+        }
+
+        var code = RecoveryPassword.code;
+
+        var resultSMS = RecoveryPassword.recovery("sms", "11111111111");
+        var resultEmail = RecoveryPassword.recovery("email","test@test.ru");
+        var resultValidate = RecoveryPassword.validate(code);
+
+    </script>
+
+    <!-- в этом скрипте находятся спеки -->
+    <script src="tests.js"></script>
+
+    <!-- в элементе с id="mocha" будут результаты тестов -->
+    <div id="mocha"></div>
+
+    <!-- запустить тесты! -->
+    <script>
+        mocha.run();
+    </script>
+</body>
+
+</html>
