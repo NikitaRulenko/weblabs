@@ -81,6 +81,10 @@
         var resultSMS = RecoveryPassword.recovery("sms", "11111111111");
         var resultEmail = RecoveryPassword.recovery("email", "test@test.ru");
         var resultValidate = RecoveryPassword.validate(RPcode);
+        var falseSMS = RecoveryPassword.recovery("sms", "123");
+        var falseEmail = RecoveryPassword.recovery("email", "qwe");
+        var wrongMethod = RecoveryPassword.recovery("","");
+        var wrongRecData = RecoveryPassword.validate("ololo");
     </script>
 
     <!-- в этом скрипте находятся спеки -->
