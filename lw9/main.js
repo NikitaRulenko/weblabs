@@ -8,16 +8,24 @@ var RecoveryPassword = {
                 isNaN(userData) == false &&
                 isNaN(Number.parseInt(userData)) == false) {
                 this.code = codeGenerator();
-            } else return false;
+                
+            } else {
+                this.valid = false;
+                return false; 
+            }
 
             Sms.send(this.code);
+            return true;
 
         } else if (recWay == "email") {
             var check = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
             if (check.test(userData) == true) this.code = codeGenerator();
-            else return false;
-
+            else {
+                this.valid = false;
+                return false;
+            }
             Email.send(this.code);
+            return true;
 
         } else return false;
     },
