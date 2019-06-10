@@ -79,6 +79,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'USER': 'admin',
+        'PASSWORD': '1',
+        'HOST': '127.0.0.1',
+        'PORT': '8000'
     }
 }
 
@@ -120,3 +124,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [],
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json'
+}
