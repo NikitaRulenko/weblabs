@@ -1,3 +1,4 @@
+import json
 from django.test import TestCase, Client
 from django.urls import reverse
 
@@ -39,7 +40,7 @@ class CityTest(TestCase):
         city_azgard = City.objects.get(name = 'Azgard')   
         self.assertEqual(city_azgard.get_country(), 1)            
 
-class GetAllCitiesTest(TestCase):
+class APICitiesTest(TestCase):
     
     def setUp(self):
         Country.objects.create(name = 'Dreamland', description = 'Somwhere_in_forest')
@@ -47,6 +48,8 @@ class GetAllCitiesTest(TestCase):
         Country.objects.create(name = 'Dankmir', description = 'Somwhere_in_swamp')
 
         City.objects.create(name = 'Pivo', description = 'temnoe', country_id = 1)
+
+        self.valid_post_city = {"city":{"name":"poponya","description":"popopopo","country_id":1}}
 
     def test_get_cities_url(self):    
         response = client.get('/api/cities/')
@@ -66,3 +69,6 @@ class GetAllCitiesTest(TestCase):
         serializer = CitySerializer(cities, many=True)
         self.assertEqual(response.data, {"cities": serializer.data})   
 
+    def test_post_city(self):
+        response = client.post('/api/cities/', data=json.dumps(self.valid_post_city), content_type='application/json')
+        self.assertEqual(response.status_code, 200)

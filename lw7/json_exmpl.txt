@@ -1,10 +1,3 @@
-{
-	"article": {
-    	"title": "qwe",
-      	"description": "dodo",
-      	"body": "peppe",
-      	"author_id": 1
-    }
-}
+{"city": {"name": "qwe", "description": "dodo", "country_id": 1}}
 
   
