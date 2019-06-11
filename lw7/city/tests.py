@@ -54,9 +54,15 @@ class APICitiesTest(TestCase):
         self.valid_put_city = {"city":{"name":"Vodka","description":"bubuka","country_id":1}}
         self.valid_delete_city = {"city":{"name":"Vodka","description":"bubuka","country_id":1}}
 
+        self.put_city_check = {"city":{"name":"Vodka","description":"bubuka","country_id":1}}
+
     def test_get_cities_url(self):    
         response = client.get('/api/cities/')
         self.assertEqual(response.status_code, 200)
+
+    def test_get_single_city_wrong_id(self):
+        response = client.get('/api/cities/100500')
+        self.assertEqual(response.status_code, 404)    
 
     def test_post_wrong_city_data(self):
         response = client.post('/api/cities/', {'name': 'yoba', 'description': 'qwerty', 'country_id': 1})
@@ -75,19 +81,23 @@ class APICitiesTest(TestCase):
     def test_post_city(self):
         response = client.post('/api/cities/', data=json.dumps(self.valid_post_city), content_type='application/json')
         self.assertEqual(response.status_code, 200)
-
-    def test_get_single_city_wrong_id(self):
-        response = client.get('/api/cities/100500')
-        self.assertEqual(response.status_code, 404)
        
     def test_valid_put_city(self):
         response = client.put('/api/cities/'+str(self.city.pk), 
                    data=json.dumps(self.valid_put_city),
                    content_type='application/json')
-        self.assertEqual(response.status_code, 200)   
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.valid_put_city, self.put_city_check)   
 
     def test_valid_delete_city(self):
-        response = client.put('/api/cities/'+str(self.city.pk), 
+        response = client.delete('/api/cities/'+str(self.city.pk), 
                    data=json.dumps(self.valid_delete_city),
                    content_type='application/json')
-        self.assertEqual(response.status_code, 200) 
+        self.assertEqual(response.status_code, 204) 
+
+        response = client.delete('/api/cities/'+str(self.city.pk), 
+                   data=json.dumps(self.valid_delete_city),
+                   content_type='application/json')
+        self.assertEqual(response.status_code, 404) 
+
+        
