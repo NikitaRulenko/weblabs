@@ -7,9 +7,12 @@
 .chat {
   padding-left: 500px;
   padding-right: 500px;
+  height: 30%;
+  padding-bottom: 20%;
+  overflow-y: visible;
 }
 
-.messagelist {
+.message {
   width: 100%;
   height: 100%;
   display: flex;
@@ -59,7 +62,7 @@
 
 #input_panel textarea {
   position: absolute;
-  width: 92.55%;
+  width: 88%;
   top: 10px;
   bottom: 10px;
   right: 120px;
