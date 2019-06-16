@@ -1,10 +1,11 @@
 import datetime
+from datetime import timedelta
 from django.db import models
 
 
 def get_delta():
     minute = timedelta(minutes=1)
-    delta = datetime.today() + minute
+    delta = datetime.datetime.now() + minute
     return delta
 
 class Payment(models.Model):
