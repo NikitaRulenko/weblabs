@@ -10,7 +10,7 @@ def get_delta():
 
 class Payment(models.Model):
     paymentSumm = models.IntegerField()
-    userLogin = models.TextField()
+    userLogin = models.CharField(max_length=120)
     userEmail = models.EmailField()
     inputTime = models.DateTimeField(auto_now_add=True)
     confirm = models.BooleanField()

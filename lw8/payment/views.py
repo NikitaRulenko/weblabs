@@ -27,7 +27,9 @@ def get_delete_update_payments(request, pk):
 def get_post_payments(request):
     # get all payment
     if request.method == 'GET':
-        return Response({})
+        payments = Payment.objects.all()
+        serializer = PaymentSerializer(payments, many=True)
+        return Response(serializer.data)
     # insert a new record for a payment
     elif request.method == 'POST':
         return Response({})
