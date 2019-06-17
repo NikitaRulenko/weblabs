@@ -2,6 +2,8 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+import datetime
+from datetime import timedelta
 
 from .models import Payment
 from .serializers import PaymentSerializer
@@ -31,6 +33,29 @@ def get_delete_update_payments(request, pk):
     if request.method == 'DELETE':
         payment.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)  
+
+#confirmation method
+@api_view(['PUT'])
+def put_confirm_payments(request, pk):
+    try: 
+        payment = Payment.objects.get(pk=pk)
+    except Payment.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)   
+
+    if request.method == 'PUT':
+        data = {'confirm': request.data.get('confirm')}
+        serializer = PaymentSerializer(payment)
+        initTime = payment.data.get('inputTime')
+        time = datetime.datetime.now()
+        minute = timedelta(minutes=1)
+
+        if initTime - time < minute:    
+            serializer = PaymentSerializer(payment, data=data)#data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)   
+        else: Response('Cant create a payment')      
 
 @api_view(['GET', 'POST'])
 def get_post_payments(request):
