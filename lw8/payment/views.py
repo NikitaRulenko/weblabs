@@ -3,7 +3,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 import datetime
-from datetime import timedelta
+from datetime import timedelta, timezone
 
 from .models import Payment
 from .serializers import PaymentSerializer
@@ -35,27 +35,33 @@ def get_delete_update_payments(request, pk):
         return Response(status=status.HTTP_204_NO_CONTENT)  
 
 #confirmation method
-@api_view(['PUT'])
+@api_view(['GET'])
 def put_confirm_payments(request, pk):
     try: 
         payment = Payment.objects.get(pk=pk)
     except Payment.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)   
 
-    if request.method == 'PUT':
-        data = {'confirm': request.data.get('confirm')}
-        serializer = PaymentSerializer(payment)
-        initTime = payment.data.get('inputTime')
-        time = datetime.datetime.now()
-        minute = timedelta(minutes=1)
+    if request.method == 'GET':
+        data = {'confirm': request.data.get('confirm: true')}
+        # serializer = PaymentSerializer(payment)
+        # initTime = time.strptime(serializer.data.get('inputTime'), '%H:%M:%S.%f')
+        # # #initTime = serializer.data.get('confirmTime')
+        # # checkTime = datetime.datetime.now()
+        # minute = timedelta(minutes=1)
+        # confirm = time.strptime(serializer.data.get('confirmTime'))
+        # then = datetime.datetime(confirm)
+        now = datetime.datetime.now(timezone.utc)
+        then = payment.confirmTime
 
-        if initTime - time < minute:    
+        
+        if then < now:    
             serializer = PaymentSerializer(payment, data=data)#data=request.data)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)   
-        else: Response('Cant create a payment')      
+        else: return Response('{Cant create a payment: OVERTIME}')       
 
 @api_view(['GET', 'POST'])
 def get_post_payments(request):
