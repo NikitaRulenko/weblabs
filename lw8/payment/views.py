@@ -29,7 +29,7 @@ def get_delete_update_payments(request, pk):
 
 @api_view(['GET', 'POST'])
 def get_post_payments(request):
-    
+
     # get all payment
     if request.method == 'GET':
         payments = Payment.objects.all()
@@ -37,5 +37,16 @@ def get_post_payments(request):
         return Response(serializer.data)
 
     # insert a new record for a payment
-    elif request.method == 'POST':
-        return Response({})
+    if request.method == 'POST':
+        data = {
+            'userLogin': request.data.get('userLogin'),
+            'userEmail': request.data.get('userEmail'),
+            'paymentSumm': int(request.data.get('paymentSumm')),
+            'description': request.data.get('description'),
+            'confirm': request.data.get('confirm')
+        }
+        serializer = PaymentSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

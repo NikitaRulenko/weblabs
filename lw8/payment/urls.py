@@ -10,5 +10,3 @@ urlpatterns = [
     path('api/v1/payments/', views.get_post_payments, name='get_post_payments'),
     path('api/v1/payments/<int:pk>', views.get_delete_update_payments, name='get_delete_update_payments'),
 ]
-
-#(?P<pk>[0-9]+)
