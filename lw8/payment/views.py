@@ -19,13 +19,17 @@ def get_delete_update_payments(request, pk):
         serializer = PaymentSerializer(payment)
         return Response(serializer.data)
 
+    # update details of a single payment
+    if request.method == 'PUT':
+        serializer = PaymentSerializer(payment, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     # delete a single payment
     elif request.method == 'DELETE':
-        return Response({})
-
-    # update details of a single payment
-    elif request.method == 'PUT':
-        return Response({})
+        return Response({})    
 
 @api_view(['GET', 'POST'])
 def get_post_payments(request):
