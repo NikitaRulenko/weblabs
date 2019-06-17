@@ -35,28 +35,21 @@ def get_delete_update_payments(request, pk):
         return Response(status=status.HTTP_204_NO_CONTENT)  
 
 #confirmation method
-@api_view(['GET'])
+@api_view(['PUT'])
 def put_confirm_payments(request, pk):
     try: 
         payment = Payment.objects.get(pk=pk)
     except Payment.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)   
 
-    if request.method == 'GET':
+    if request.method == 'PUT':
         data = {'confirm': request.data.get('confirm: true')}
         # serializer = PaymentSerializer(payment)
-        # initTime = time.strptime(serializer.data.get('inputTime'), '%H:%M:%S.%f')
-        # # #initTime = serializer.data.get('confirmTime')
-        # # checkTime = datetime.datetime.now()
-        # minute = timedelta(minutes=1)
-        # confirm = time.strptime(serializer.data.get('confirmTime'))
-        # then = datetime.datetime(confirm)
         now = datetime.datetime.now(timezone.utc)
         then = payment.confirmTime
 
-        
         if then < now:    
-            serializer = PaymentSerializer(payment, data=data)#data=request.data)
+            serializer = PaymentSerializer(payment, data=request.data)#data=request.data)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
