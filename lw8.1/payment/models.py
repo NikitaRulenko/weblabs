@@ -12,10 +12,10 @@ class Payment(models.Model):
     paymentSumm = models.IntegerField()
     userLogin = models.CharField(max_length=120)
     userEmail = models.EmailField()
-    inputTime = models.DateTimeField(auto_now_add=True)
+    inputTime = models.TimeField(auto_now_add=True)
     confirm = models.BooleanField(blank=True)
     description = models.TextField()
-    confirmTime = models.DateTimeField(default=get_delta)
+    confirmTime = models.TimeField(default=get_delta)
 
     def __str__(self):
         return self.description

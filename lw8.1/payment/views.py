@@ -2,8 +2,9 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-import datetime, time
+import datetime, time, sys
 from datetime import timedelta
+from time import mktime
 
 from .models import Payment
 from .serializers import PaymentSerializer
@@ -44,18 +45,22 @@ def put_confirm_payments(request, pk):
 
     if request.method == 'GET':
         data = {'confirm': request.data.get('confirm: true')}
-        serializer = PaymentSerializer(payment)
-        initTime = time.strptime(serializer.data.get('inputTime'))
-        #time = datetime.datetime.now()
+        # serializer = PaymentSerializer(payment)
+        # initTime = time.strptime(serializer.data.get('inputTime'), '%H:%M:%S.%f')
+        # # #initTime = serializer.data.get('confirmTime')
+        # # checkTime = datetime.datetime.now()
         minute = timedelta(minutes=1)
-
-        if initTime - time < minute:    
+        confirm = time.strptime(serializer.data.get('confirmTime'))
+        then = datetime.datetime(confirm)
+        now = datetime.datetime.now()
+        
+        if confirm < now:    
             serializer = PaymentSerializer(payment, data=data)#data=request.data)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)   
-        else: Response('Cant create a payment')      
+        else: Response('Cant create a payment: OVERTIME')      
 
 @api_view(['GET', 'POST'])
 def get_post_payments(request):
