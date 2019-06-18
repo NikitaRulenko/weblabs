@@ -16,6 +16,7 @@ class Payment(models.Model):
     confirm = models.BooleanField(blank=True)
     description = models.TextField()
     confirmTime = models.DateTimeField(default=get_delta)
+    cancel = models.BooleanField(blank=True)
 
     def __str__(self):
         return self.description
@@ -25,6 +26,7 @@ class Payment(models.Model):
     #     if (inputTime + minute) > confirmTime:
     #         confirm = False
 
-class ReturnPayment(models.Model):
+class RefundPayment(models.Model):
     payment_id = models.ForeignKey('Payment', related_name='payments', on_delete=models.CASCADE)
-    #paymentDescription = models.ForeignKey()
+    paymentDescription = models.TextField()
+    inputTime = models.DateTimeField(auto_now_add=True)

@@ -10,7 +10,7 @@ from .serializers import PaymentSerializer
 
 
 @api_view(['GET', 'DELETE', 'PUT'])
-def get_delete_update_payments(request, pk):
+def getone_delete_update_payment(request, pk):
     try:
         payment = Payment.objects.get(pk=pk)
     except Payment.DoesNotExist:
@@ -35,29 +35,48 @@ def get_delete_update_payments(request, pk):
         return Response(status=status.HTTP_204_NO_CONTENT)  
 
 #confirmation method
-@api_view(['PUT'])
-def put_confirm_payments(request, pk):
+@api_view(['GET'])
+def confirm_payments(request, pk):
     try: 
         payment = Payment.objects.get(pk=pk)
+        payment.confirm = True
+        payment.save()
     except Payment.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)   
 
-    if request.method == 'PUT':
-        data = {'confirm': request.data.get('confirm: true')}
-        # serializer = PaymentSerializer(payment)
+    if request.method == 'GET':
+        #data = {'confirm': request.data.get('confirm: true')}
         now = datetime.datetime.now(timezone.utc)
         then = payment.confirmTime
 
         if then < now:    
-            serializer = PaymentSerializer(payment, data=request.data)#data=request.data)
+
+            serializer = PaymentSerializer(payment, data=request.data)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)   
-        else: return Response('{Cant create a payment: OVERTIME}')       
+        else: return Response('{Cant create a payment: OVERTIME}')      
+
+#cancel method
+@api_view(['GET'])
+def cancel_payments(request, pk): 
+    try:
+        payment = Payment.objects.get(pk=pk)
+        payment.cancel = True
+        payment.save()
+    except Payment.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = PaymentSerializer(payment, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)        
 
 @api_view(['GET', 'POST'])
-def get_post_payments(request):
+def getall_add_payments(request):
 
     # get all payment
     if request.method == 'GET':
@@ -72,7 +91,8 @@ def get_post_payments(request):
             'userEmail': request.data.get('userEmail'),
             'paymentSumm': int(request.data.get('paymentSumm')),
             'description': request.data.get('description'),
-            'confirm': request.data.get('confirm')
+            'confirm': request.data.get('confirm'),
+            'cancel': request.data.get('cancel')
         }
         serializer = PaymentSerializer(data=data)
         if serializer.is_valid():
