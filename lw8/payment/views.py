@@ -11,7 +11,8 @@ from .serializers import PaymentSerializer
 @api_view(['GET'])
 def refund_payment(request, pk):
     try:
-        refund = RefundPayment.objects.create()
+        payment = Payment.objects.get(pk=pk)
+        refund = RefundPayment.objects.create(payment_id=payment.id)
     except RefundPayment.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
