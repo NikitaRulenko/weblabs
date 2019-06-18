@@ -5,9 +5,15 @@ from rest_framework import status
 import datetime
 from datetime import timedelta, timezone
 
-from .models import Payment
+from .models import Payment, RefundPayment
 from .serializers import PaymentSerializer
 
+@api_view(['GET'])
+def refund_payment(request, pk):
+    try:
+        refund = RefundPayment.objects.create()
+    except RefundPayment.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['GET', 'DELETE', 'PUT'])
 def getone_delete_update_payment(request, pk):
@@ -49,31 +55,27 @@ def confirm_payments(request, pk):
         now = datetime.datetime.now(timezone.utc)
         then = payment.confirmTime
 
-        if then < now:    
-
-            serializer = PaymentSerializer(payment, data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)   
-        else: return Response('{Cant create a payment: OVERTIME}')      
+        if then > now:    
+            payment.confirm = True
+            payment.save()
+            return Response('{Payment confirmed!}')
+        else: 
+            payment.confirm = False
+            payment.save()
+            return Response('{Cant create a payment: OVERTIME}')      
 
 #cancel method
 @api_view(['GET'])
 def cancel_payments(request, pk): 
     try:
         payment = Payment.objects.get(pk=pk)
-        payment.cancel = True
-        payment.save()
     except Payment.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
-        serializer = PaymentSerializer(payment, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)        
+        payment.cancel = True
+        payment.save()
+        return Response('{Payment canceled!}')        
 
 @api_view(['GET', 'POST'])
 def getall_add_payments(request):
